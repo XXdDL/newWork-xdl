@@ -1,12 +1,13 @@
 # Makefile for Smart Transport System Development
 
-.PHONY: help guard test lint format
+.PHONY: help guard test lint format validate
 
 # Default target
 help:
 	@echo "可用命令:"
 	@echo "  make guard      - 运行架构检查"
 	@echo "  make guard-strict - 严格模式架构检查"
+	@echo "  make validate   - 运行架构验证"
 	@echo "  make test       - 运行测试"
 	@echo "  make lint       - 代码质量检查"
 	@echo "  make format     - 代码格式化"
@@ -29,25 +30,32 @@ guard-module:
 	@echo "🔍 检查模块 $(module)..."
 	python scripts/architecture_guard.py --module $(module)
 
+# Architecture validation
+validate:
+	@echo "🔍 运行架构验证..."
+	python scripts/architecture_validator.py
+
 # Testing
 test:
 	@echo "🧪 运行测试..."
-	# 添加测试命令
+	cd backend && python -m pytest -v
 
 # Linting
 lint:
 	@echo "📏 运行代码检查..."
-	# 添加lint命令
+	cd backend && python -m flake8 app --max-line-length=88 --statistics
 
 # Formatting
 format:
 	@echo "🎨 代码格式化..."
-	# 添加格式化命令
+	cd backend && python -m black app --line-length=88
+	cd backend && python -m isort app
 
 # Development environment
 dev:
 	@echo "🚀 启动开发环境..."
-	# 添加开发环境启动命令
+	@echo "正在启动开发环境，请稍候..."
+	@scripts\dev.bat
 
 # Clean
 clean:
